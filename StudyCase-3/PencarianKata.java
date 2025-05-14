@@ -1,24 +1,22 @@
-import java.util.ArrayList; // Digunakan untuk menyimpan semua posisi kata yang ditemukan
-import java.util.Scanner;   // Untuk membaca input dari pengguna
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class PencarianKata {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in); // Membuat Scanner
+        Scanner scanner = new Scanner(System.in);
 
         System.out.println("=== SISTEM PENCARIAN KATA ===");
-
         System.out.print("Masukkan teks: ");
-        String teks = scanner.nextLine(); // Input teks sumber
+        String teks = scanner.nextLine();
 
         System.out.print("Masukkan kata yang dicari: ");
-        String kataCari = scanner.nextLine(); // Input kata yang akan dicari
+        String kataCari = scanner.nextLine();
 
-        // Panggil fungsi untuk mencari posisi kemunculan kata
+        // Lakukan pencarian kata
         ArrayList<Integer> posisiDitemukan = cariKata(teks, kataCari);
 
         System.out.println("\nHASIL PENCARIAN:");
         if (posisiDitemukan.size() > 0) {
-            // Jika ditemukan, tampilkan jumlah dan posisi
             System.out.println("Kata '" + kataCari + "' ditemukan sebanyak " +
                                posisiDitemukan.size() + " kali pada posisi:");
 
@@ -27,53 +25,52 @@ public class PencarianKata {
                                    " (karakter ke-" + (posisiDitemukan.get(i) + 1) + ")");
             }
 
-            // Tampilkan teks yang diberi tanda highlight pada kata
+            // Tampilkan teks dengan highlight kata yang ditemukan
             System.out.println("\nTeks dengan highlight:");
             tampilkanTeksHighlight(teks, kataCari, posisiDitemukan);
         } else {
-            // Jika tidak ditemukan
             System.out.println("Kata '" + kataCari + "' tidak ditemukan dalam teks.");
         }
 
-        scanner.close(); // Menutup Scanner
+        scanner.close();
     }
 
-    // Fungsi untuk mencari semua posisi kemunculan kata dalam teks (case-insensitive)
     public static ArrayList<Integer> cariKata(String teks, String kata) {
         ArrayList<Integer> posisi = new ArrayList<>();
 
-        String teksLower = teks.toLowerCase(); // Konversi ke huruf kecil
+        // Konversi ke lowercase untuk pencarian case-insensitive
+        String teksLower = teks.toLowerCase();
         String kataLower = kata.toLowerCase();
 
-        int panjangKata = kataLower.length(); // Panjang kata target
-        int panjangTeks = teksLower.length(); // Panjang keseluruhan teks
+        int panjangKata = kataLower.length();
+        int panjangTeks = teksLower.length();
 
-        // Lakukan pencarian linear dari awal hingga akhir teks
+        // Lakukan linear search
         for (int i = 0; i <= panjangTeks - panjangKata; i++) {
-            // Ambil substring sepanjang kata target
+            // Periksa apakah substring dari posisi i sampai i+panjangKata sama dengan kata
             String potongan = teksLower.substring(i, i + panjangKata);
 
-            // Jika sama, berarti kata ditemukan
             if (potongan.equals(kataLower)) {
-                posisi.add(i); // Simpan posisi indeks awal kemunculan
-                // Catatan: jika ingin abaikan overlap, bisa tambahkan i += panjangKata - 1;
+                posisi.add(i);
+
+                // Optional: Skip ke akhir kata yang ditemukan untuk menghindari overlap
+                // i += panjangKata - 1;
             }
         }
 
         return posisi;
     }
 
-    // Fungsi untuk menampilkan teks dengan highlight (pakai tanda [ dan ])
     public static void tampilkanTeksHighlight(String teks, String kata, ArrayList<Integer> posisi) {
-        StringBuilder hasil = new StringBuilder(teks); // Gunakan StringBuilder untuk manipulasi teks
+        StringBuilder hasil = new StringBuilder(teks);
 
-        // Sisipkan tanda highlight dari belakang agar indeks tidak bergeser
+        // Tambahkan marker untuk highlight (dari posisi terjauh dulu untuk menghindari pergeseran indeks)
         for (int i = posisi.size() - 1; i >= 0; i--) {
             int pos = posisi.get(i);
-            hasil.insert(pos + kata.length(), "]"); // Tambah penutup setelah kata
-            hasil.insert(pos, "[");                // Tambah pembuka sebelum kata
+            hasil.insert(pos + kata.length(), "]");
+            hasil.insert(pos, "[");
         }
 
-        System.out.println(hasil.toString()); // Tampilkan teks dengan highlight
+        System.out.println(hasil.toString());
     }
 }
